@@ -72,6 +72,7 @@
     A.unlocked = true;
     window.removeEventListener('pointerdown', unlock);
     window.removeEventListener('keydown', unlock);
+    if (A.pendingSong) { const p = A.pendingSong; A.pendingSong = null; playSong(p); }
   }
   window.addEventListener('pointerdown', unlock, { passive: true });
   window.addEventListener('keydown', unlock, { passive: true });
@@ -82,10 +83,19 @@
   });
 
   /* ---------------- music sequencer ---------------- */
-  function defineSong(name, spec) { A.songs[name] = spec; }
+  function defineSong(name, spec) {
+    // pre-split step strings into tokens: "A2 - - ." -> ['A2','-','-','.']
+    spec.layers = spec.layers.map(L => {
+      const t = Object.assign({}, L);
+      t.tokens = typeof L.steps === 'string' ? L.steps.trim().split(/\s+/) : L.steps;
+      return t;
+    });
+    A.songs[name] = spec;
+  }
 
   function playSong(name, opts = {}) {
-    if (!A.unlocked && !ensure()) return;
+    if (!ensure()) return;
+    if (A.ctx.state !== 'running') { A.pendingSong = name; return; }
     if (A.current === name) return;
     stopSong({ fade: 0.25 });
     A.current = name;
@@ -117,6 +127,7 @@
     const spec = A.songs[A.current];
     if (!spec) return;
     const spb = 60 / spec.bpm / 4; // 16th note
+    if (A.nextTime < A.ctx.currentTime - 0.25) A.nextTime = A.ctx.currentTime + 0.05; // resync after suspension
     while (A.nextTime < A.ctx.currentTime + 0.14) {
       playStep(spec, A.step, A.nextTime, spb);
       A.step = (A.step + 1) % (spec.bars ? spec.bars * 16 : 16);
@@ -129,14 +140,12 @@
     spec.layers.forEach(L => {
       if (L.intensity && Math.abs(A.intensity) < 0.01) return;
       const gain = (L.gain || 0.5) * (L.intensity ? (0.4 + 0.6 * A.intensity) : 1);
-      const steps = L.steps;
-      const idx = step % steps.length;
-      const token = steps[idx];
-      if (token === '.' || token === ' ') return;
-      let sustain = token === '-';
-      if (sustain) return; // handled at note start
+      const tokens = L.tokens;
+      const idx = step % tokens.length;
+      const token = tokens[idx];
+      if (token === '.' || token === '-') return; // rests and sustains
       let dur = 1;
-      for (let k = idx + 1; k < steps.length && steps[k] === '-'; k++) dur++;
+      for (let k = idx + 1; k < tokens.length && tokens[k] === '-'; k++) dur++;
       const type = L.type || 'lead';
       if (type === 'kick') drum('kick', t, out, gain);
       else if (type === 'snare') drum('snare', t, out, gain);
