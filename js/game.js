@@ -34,7 +34,7 @@
   let skyOffset = 0;
   let camZ = 0, playerX = 0, speed = 0, energy = 70;
   let boosting = false, boostLerp = 0;
-  let lap = 1, lapStart = 0, raceTime = 0, lastLap = 0, bestLap = Infinity;
+  let lap = 1, lapStart = 0, raceTime = 0, lastLap = 0, bestLap = Infinity, tuneLvl = 0;
   let topSpeed = 0, position = 6, state = 'attract';
   let cdTimer = 0, cdValue = 3, offroadT = 0;
   let particles = Kit.particles();
@@ -109,7 +109,7 @@
     buildTrack(); resetRivals();
     camZ = 0; playerX = 0; speed = 0; energy = 70;
     lap = 1; lapStart = 0; raceTime = 0; lastLap = 0; bestLap = Infinity;
-    topSpeed = 0; totalDist = 0; prevSegIdx = 0; offroadT = 0;
+    topSpeed = 0; totalDist = 0; prevSegIdx = 0; offroadT = 0; tuneLvl = 0;
     particles.clear();
     state = 'countdown'; cdTimer = 0; cdValue = 3;
     showCountdown('3');
@@ -182,7 +182,7 @@
         energy = Math.min(100, energy + 6.5 * dt);
         boostLerp = Math.max(0, boostLerp - dt * 2.2);
       }
-      const cap = MAXS * (1 + 0.32 * boostLerp);
+      const cap = MAXS * (1 + 0.05 * tuneLvl + 0.32 * boostLerp);
       speed += (cap - speed) * dt * (speed < cap ? 1.15 : 0.6);
       topSpeed = Math.max(topSpeed, speed);
     } else if (attract) {
@@ -239,11 +239,19 @@
               onOpen: () => G.pause(),
               onClose: () => { if (Kit.screens.active() === 'hud' && (state === 'race')) G.resume(); }
             }).then(ok => {
-              if (ok && state === 'race') {
+              if (state !== 'race') return;
+              if (ok) {
+                tuneLvl = Math.min(5, tuneLvl + 1);
                 energy = Math.min(100, energy + 30);
                 Audio.sfx('powerup');
                 particles.spawn(W.w / 2, W.h * 0.3, { count: 12, color: '#FFD166', spread: 220, decay: 2.2, size: 2.6, glow: true });
-                Kit.toast('+30 boost cell — clean read');
+                Kit.toast(`Clean read — tune level ${tuneLvl} (top speed up)`);
+                Mascot.react('lap');
+              } else {
+                energy = Math.max(6, energy - 25);
+                Audio.sfx('fail');
+                G.shake(6);
+                Kit.toast('Wrong read — the cell took a hit (-25)');
               }
             });
           }
@@ -592,10 +600,11 @@
       <div class="hud-top">
         <div class="chip speed-chip"><small>Velocity</small><b id="hw-speed">0</b> km/h</div>
         <div class="chip"><small>Lap</small><span id="hw-lap">1/3</span> · Pos <span class="acc" id="hw-pos">6</span></div>
-        <div class="chip" style="min-width:140px"><small>Boost cell</small><div class="meter"><i id="hw-boost" style="width:70%"></i></div></div>
+        <div class="chip" style="min-width:150px"><small>Boost cell · Tune <span class="acc" id="hw-tune">0</span></small><div class="meter"><i id="hw-boost" style="width:70%"></i></div></div>
       </div>
       <div class="hud-bottom"><div class="chip"><small>Lap time</small><span id="hw-time">0:00.0</span></div></div>`;
     hudEls = {
+      tune: document.getElementById('hw-tune'),
       speed: document.getElementById('hw-speed'),
       lap: document.getElementById('hw-lap'),
       pos: document.getElementById('hw-pos'),
@@ -605,6 +614,7 @@
   }
   function updateHUD() {
     if (!hudEls || state === 'attract') return;
+    hudEls.tune.textContent = 'LV' + tuneLvl;
     hudEls.speed.textContent = Math.round(speed / MAXS * 322);
     hudEls.lap.textContent = `${lap}/${LAPS}`;
     hudEls.pos.textContent = position;

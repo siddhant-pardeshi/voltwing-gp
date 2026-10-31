@@ -82,7 +82,7 @@
     ArrowRight: 'right', KeyD: 'right',
     ArrowUp: 'up', KeyW: 'up',
     ArrowDown: 'down', KeyS: 'down',
-    Space: 'action', KeyJ: 'action',
+    Space: 'action', KeyJ: 'action', KeyE: 'action',
     ShiftLeft: 'boost', ShiftRight: 'boost', KeyK: 'boost',
     KeyZ: 'slide', KeyC: 'slide',
     Enter: 'enter', Escape: 'pause', KeyP: 'pause', KeyM: 'mute', KeyH: 'help'

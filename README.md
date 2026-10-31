@@ -31,7 +31,7 @@ Three laps. Best total time is saved on your device.
 
 ## Learn while you race
 
-Between laps, the pit wall raises a **concept board** — a quick question from the Git essentials curriculum (what a commit stores, when to stash, why revert beats force-push). The race pauses for a breath while the board is up: a correct read patches your boost cell +30. Wrong answers cost nothing but get a one-line explanation from the crew. The **Concepts** screen on the menu tracks mastery — three correct reads masters a card — and the results screen counts what you practiced. Learning mode never blocks the race; skip is always one tap away.
+Between laps, the pit wall raises a **concept board** — a quick question from the Git essentials curriculum (what a commit stores, when to stash, why revert beats force-push). The race pauses for a breath while the board is up. A correct read patches your boost cell +30 and raises your **tune level** — each level adds permanent top speed for the rest of the race (LV5 max). A wrong read stings: the cell takes a -25 hit. Learn the repo, fly faster. The **Concepts** screen on the menu tracks mastery — three correct reads masters a card — and the results screen counts what you practiced. Learning mode never blocks the race; skip is always one tap away.
 
 ![Pit board concept card](docs/media/learn.png)
 
