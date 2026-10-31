@@ -230,6 +230,20 @@
         Audio.sfx('checkpoint');
         Mascot.react('lap');
         Kit.toast(`Lap ${lap} / ${LAPS}`);
+        /* pit board: a Git concept while the lap runs — correct read patches the cell */
+        if (window.Learn && window.LEARN_DATA) {
+          const card = Learn.nextCard();
+          if (card) {
+            Learn.show(card, { timer: 16 }).then(ok => {
+              if (ok && state === 'race') {
+                energy = Math.min(100, energy + 30);
+                Audio.sfx('powerup');
+                particles.spawn(W.w / 2, W.h * 0.3, { count: 12, color: '#FFD166', spread: 220, decay: 2.2, size: 2.6, glow: true });
+                Kit.toast('+30 boost cell — clean read');
+              }
+            });
+          }
+        }
       }
       prevSegIdx = segIdx;
     }
@@ -672,6 +686,10 @@
         fail: ['They took this one. Rematch, pilot?', 'Every champion eats a loss. Grid is still hot.']
       },
       cooldowns: { gate: 5000, crash: 6000, low: 12000 }
+    },
+    learn: {
+      intro: window.LEARN_DATA.intro,
+      banks: window.LEARN_DATA.banks
     },
     menuSong: 'menu',
     gameSong: 'race',

@@ -42,6 +42,7 @@
     <div class="btnrow">
       <button class="btn primary" id="btn-play">Play</button>
       <button class="btn" id="btn-howto">How to play</button>
+      <button class="btn" id="btn-codex" hidden>Concepts</button>
       <button class="btn ghost" id="btn-settings">Settings</button>
     </div>
     <p class="beststat" id="menu-best"></p>
@@ -95,11 +96,19 @@
     </div>
   </section>`);
 
+  const codex = mk(`<section class="screen scroll" data-screen="codex">
+    <div class="kicker">Concept codex</div>
+    <h1 class="title" style="font-size:clamp(24px,5vw,38px)">What you know</h1>
+    <p class="tagline" id="codex-summary"></p>
+    <div class="codex" id="codex-list"></div>
+    <div class="btnrow"><button class="btn primary" id="btn-codex-back">Back</button></div>
+  </section>`);
+
   const hud = mk(`<div class="hud" id="hud" hidden></div>`);
   const veil = mk(`<div class="veil" id="veil"><div class="v-inner"><div class="v-title">${G.brand || 'Loading'}</div><div class="v-bar"><i></i></div></div></div>`);
 
   const root = document.querySelector('.game-root');
-  [menu, howto, settings, pause, results, hud].forEach(el => root.appendChild(el));
+  [menu, howto, settings, codex, pause, results, hud].forEach(el => root.appendChild(el));
   document.body.appendChild(veil);
 
   /* touch controls */
@@ -154,6 +163,8 @@
   $('#btn-howto-back').addEventListener('click', () => { Audio.sfx('back'); showScreen('menu'); });
   $('#btn-settings').addEventListener('click', () => { Audio.sfx('ui'); showScreen('settings'); });
   $('#btn-settings-back').addEventListener('click', () => { Audio.sfx('back'); showScreen('menu'); });
+  $('#btn-codex').addEventListener('click', () => { Audio.sfx('ui'); renderCodex(); showScreen('codex'); });
+  $('#btn-codex-back').addEventListener('click', () => { Audio.sfx('back'); showScreen('menu'); });
   $('#btn-pause').addEventListener('click', togglePause);
   $('#btn-resume').addEventListener('click', () => { Audio.sfx('select'); resume(); });
   $('#btn-restart').addEventListener('click', () => { Audio.sfx('select'); showScreen('hud'); G.onRestart ? G.onRestart() : G.onStart(); });
@@ -244,7 +255,12 @@
     $('#r-medal').textContent = medal;
     $('#r-kicker').textContent = kicker;
     $('#r-title').textContent = title;
-    $('#r-stats').innerHTML = stats.map(s => `<div class="stat"><b>${s.value}</b><span>${s.label}</span></div>`).join('');
+    let statHtml = stats.map(s => `<div class="stat"><b>${s.value}</b><span>${s.label}</span></div>`).join('');
+    if (window.Learn && G.learn) {
+      const sum = Learn.summary();
+      if (sum.seen > 0) statHtml += `<div class="stat"><b>${sum.right}/${sum.right + sum.wrong}</b><span>Concepts</span></div><div class="stat"><b>${sum.mastered}</b><span>Mastered</span></div>`;
+    }
+    $('#r-stats').innerHTML = statHtml;
     if (best) {
       const prev = Kit.store.get(G.best.key, best.lowerBetter ? Infinity : 0);
       const isPB = best.lowerBetter ? best.value < prev : best.value > prev;
@@ -260,6 +276,30 @@
   };
   Kit.showScreen = showScreen;
   Kit.pauseToggle = togglePause;
+
+  /* ---------- learn layer ---------- */
+  if (G.learn && window.Learn) {
+    Learn.configure(G.id);
+    Learn.define(G.learn.banks);
+    $('#btn-codex').hidden = false;
+  }
+  function renderCodex() {
+    const list = $('#codex-list');
+    if (!G.learn || !window.Learn) { list.innerHTML = ''; return; }
+    const sum = Learn.summary();
+    $('#codex-summary').textContent = G.learn.intro || '';
+    let html = '';
+    for (const [track, cards] of Object.entries(G.learn.banks)) {
+      html += `<h3 class="codex-track">${track}</h3>`;
+      html += cards.map(c => {
+        const st = Learn.stars(c.id);
+        const starRow = '★'.repeat(st) + '☆'.repeat(3 - st);
+        return `<details class="codex-card"><summary><span class="cx-stars">${starRow}</span> ${c.q}</summary><p class="cx-why">${c.why}</p></details>`;
+      }).join('');
+    }
+    html += `<p class="codex-note">${sum.seen} of ${sum.total} concepts encountered · ${sum.mastered} mastered (3 correct each)</p>`;
+    list.innerHTML = html;
+  }
 
   /* ---------- mascot ---------- */
   Mascot.mount(dock, Object.assign({}, G.mascot));
