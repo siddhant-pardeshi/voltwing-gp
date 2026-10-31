@@ -33,6 +33,8 @@ Three laps. Best total time is saved on your device.
 
 Between laps, the pit wall raises a **concept board** — a quick question from the Git essentials curriculum (what a commit stores, when to stash, why revert beats force-push). Answer while you keep driving: a correct read patches your boost cell +30. Wrong answers cost nothing but get a one-line explanation from the crew. The **Concepts** screen on the menu tracks mastery — three correct reads masters a card — and the results screen counts what you practiced. Learning mode never blocks the race; skip is always one tap away.
 
+![Pit board concept card](docs/media/learn.png)
+
 ## Nova, your pit chief
 
 The guide in the corner is Nova — she rebuilt the car, and she has opinions. She greets you on your first visit, calls out the grid countdown, reacts when you thread a gate, winces at contact, celebrates laps, and gets drowsy if you pause long enough. She follows the game's events with real animations (waving, cheering, thinking, sleeping) rather than a static picture, and you can hide or mute her in Settings.
