@@ -234,7 +234,11 @@
         if (window.Learn && window.LEARN_DATA) {
           const card = Learn.nextCard();
           if (card) {
-            Learn.show(card, { timer: 16 }).then(ok => {
+            Learn.show(card, {
+              timer: 16,
+              onOpen: () => G.pause(),
+              onClose: () => { if (Kit.screens.active() === 'hud' && (state === 'race')) G.resume(); }
+            }).then(ok => {
               if (ok && state === 'race') {
                 energy = Math.min(100, energy + 30);
                 Audio.sfx('powerup');
