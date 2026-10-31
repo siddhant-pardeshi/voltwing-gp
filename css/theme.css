@@ -1,0 +1,35 @@
+/* Voltwing GP theme — dusk circuit: deep violet sky, cyan track, magenta trim */
+:root {
+  --acc: #7EE8FF;
+  --acc2: #FF6EC7;
+  --ink: #F2F6FF;
+  --dim: #9FB2D4;
+  --bg: #0B0F1C;
+  --panel: rgba(13, 17, 30, .86);
+  --font: 'Trebuchet MS', 'Segoe UI', system-ui, sans-serif;
+}
+
+/* the menu title gets a two-tone electric look */
+h1.title { color: #fff; }
+h1.title em {
+  background: linear-gradient(120deg, #7EE8FF, #B08CFF 55%, #FF6EC7);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* HUD speed readout */
+#hud .speed-chip b { font-size: 20px; color: #7EE8FF; letter-spacing: .02em; }
+#hud .boost-meter i { background: linear-gradient(90deg, #7EE8FF, #FF6EC7); }
+
+/* logo pulse on the top bar */
+.topbar .brand { color: #7EE8FF; }
+
+/* menu floats over the live attract-mode scene */
+[data-screen="menu"], [data-screen="pause"], [data-screen="results"] {
+  background: linear-gradient(180deg, rgba(11,15,28,.86), rgba(24,16,44,.72));
+  backdrop-filter: blur(3px);
+}
+
+/* keep the lap-time chip clear of the player car */
+#hud .hud-bottom { justify-content: flex-start; margin-bottom: 4px; }
