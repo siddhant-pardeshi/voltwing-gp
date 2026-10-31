@@ -4,7 +4,7 @@
 
 [▶ Play Voltwing GP](https://siddhant-pardeshi.github.io/voltwing-gp/) — free, no install, no login. Runs on phones and desktops.
 
-![Voltwing GP race action](docs/media/gameplay.png)
+![Voltwing GP race action](docs/media/gameplay.gif)
 
 ## The pitch
 
@@ -65,6 +65,10 @@ python -m http.server 8000
 ```
 
 Any static server works; there is no build step.
+
+## About
+
+**Made by Siddhant Pardeshi.** Part of [The Game Deck](https://siddhant-pardeshi.github.io/game-deck/) — six handcrafted worlds on one shared game kit, each with its own curriculum woven into the mechanics.
 
 ## License
 
