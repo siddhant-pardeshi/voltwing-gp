@@ -37,7 +37,7 @@ A common rhythm: charge through two gates, spend it all on one straight overtake
 
 ## Reading the track
 
-- **The neon edges** alternate cyan and magenta. When the color band changes, a corner is starting — that is your cue to settle the car before you turn in.
+- **The neon edges never change sides** — cyan rail on the left, magenta on the right, always. That constant frame is your heading reference: if the rails drift one way, you are drifting the other.
 - **Light pylons** line both sides. If you are seeing them up close, you are off the strip; the car drags through plasma dust and bleeds speed hard.
 - **Curves lean the car outward — gently.** The bends are readable: edges glow in one continuous color, corners flow instead of snapping, and you can always steer back. Hold the stick into the bend and the car holds the line with you.
 - **Hills hide gates.** On the crest you see less sky, not more track — lift slightly and hold your line until the far side reveals itself.
