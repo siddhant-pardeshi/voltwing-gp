@@ -39,7 +39,7 @@ A common rhythm: charge through two gates, spend it all on one straight overtake
 
 - **The neon edges** alternate cyan and magenta. When the color band changes, a corner is starting — that is your cue to settle the car before you turn in.
 - **Light pylons** line both sides. If you are seeing them up close, you are off the strip; the car drags through plasma dust and bleeds speed hard.
-- **Curves pull you outward.** The car drifts wide through every bend on its own. Ease off the steering as the track turns in, and let the bend do some of the work.
+- **Curves lean the car outward — gently.** The bends are readable: edges glow in one continuous color, corners flow instead of snapping, and you can always steer back. Hold the stick into the bend and the car holds the line with you.
 - **Hills hide gates.** On the crest you see less sky, not more track — lift slightly and hold your line until the far side reveals itself.
 
 ## Racing the drones

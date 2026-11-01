@@ -65,6 +65,16 @@
     }
     while (segs.length < N) segs.push({ curve: 0, y1: 0, y2: 0, gate: false, pylon: 0 });
     segs.length = N;
+    /* bends flow into each other — a moving average turns hard section
+       boundaries into continuous, readable curves (seamless across the lap) */
+    const win = 8;
+    const smoothed = new Array(N);
+    for (let i = 0; i < N; i++) {
+      let sum = 0;
+      for (let k = -win; k <= win; k++) sum += segs[(i + k + N) % N].curve;
+      smoothed[i] = sum / (win * 2 + 1);
+    }
+    for (let i = 0; i < N; i++) segs[i].curve = smoothed[i];
     for (let i = 0; i < N; i++) {
       segs[i].y1 = elevation(i * SEG);
       segs[i].y2 = elevation((i + 1) * SEG);
@@ -193,14 +203,20 @@
       speed *= 1 - 1.8 * dt;
     } else speed = 0;
 
-    /* steering */
+    /* steering — authority always beats the bend's pull, so the car is
+       always catchable; curves lean the car, they don't kidnap it */
     steerSm += (input.axis().x - steerSm) * Math.min(1, dt * 12);
+    const bend = segAt(camZ).curve;
     if (racing) {
-      playerX += steerSm * dt * 2.1 * (0.35 + 0.75 * speedRatio);
-      playerX -= segAt(camZ).curve * speedRatio * dt * 2.1;
+      playerX += steerSm * dt * 2.6 * (0.42 + 0.78 * speedRatio);
+      playerX -= bend * speedRatio * dt * 0.55;
+      /* straights gently gather the car back to the racing line */
+      if (Math.abs(bend) < 0.4 && Math.abs(steerSm) < 0.25) {
+        playerX += (0 - playerX) * dt * 0.55;
+      }
       playerX = Kit.clamp(playerX, -2.4, 2.4);
     } else if (attract) {
-      playerX += (-segAt(camZ).curve * 0.8 - playerX) * dt * 1.2;
+      playerX += (-bend * 0.55 - playerX) * dt * 1.4;
     }
 
     /* off the energy strip */
@@ -397,9 +413,8 @@
       const alt = Math.floor(idx / 3) % 2 === 0;
       ctx.fillStyle = alt ? '#181D30' : '#141827';
       quad(ctx, p1.x, p1.y, p1.w, p2.x, p2.y, p2.w);
-      const edge = Math.floor(idx / 6) % 2 === 0 ? '#7EE8FF' : '#FF6EC7';
-      edgeLine(ctx, p1.x, p1.y, p1.w, p2.x, p2.y, p2.w, -1, edge);
-      edgeLine(ctx, p1.x, p1.y, p1.w, p2.x, p2.y, p2.w, 1, edge);
+      edgeLine(ctx, p1.x, p1.y, p1.w, p2.x, p2.y, p2.w, -1, '#7EE8FF');
+      edgeLine(ctx, p1.x, p1.y, p1.w, p2.x, p2.y, p2.w, 1, '#FF6EC7');
       if (idx % 8 < 3) edgeLine(ctx, p1.x, p1.y, p1.w, p2.x, p2.y, p2.w, 0, 'rgba(234,241,255,0.4)');
     }
 

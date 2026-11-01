@@ -25,6 +25,7 @@ Three laps. Best total time is saved on your device.
 | Pause | `Esc` or `P` | Pause icon |
 
 - **Orbit gates** add charge and a burst of speed. Fly through the middle of the arch.
+- **The bends lean the car, they don't kidnap it.** Steering authority always beats the corner's pull — hold the line and the car comes with you. Straights gather you back to the racing line automatically.
 - **Rival drones** hold their lines and punish contact — bumping one scrubs speed off both of you. Overtake in the bends, not on their nose.
 - **Off the strip** the car drags through plasma dust and bleeds speed. The light pylons mark the safe edge.
 - Full guide with racing tips: [docs/HOW_TO_PLAY.md](docs/HOW_TO_PLAY.md).
