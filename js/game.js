@@ -747,4 +747,39 @@
   toAttract();
   G.start();
 
+  /* ---- deterministic self-test (?selftest=1) ----
+     Pumps the real update() for 60 simulated seconds with a simple
+     center-seeking driver and reports how well the car holds the road. */
+  if (/selftest/.test(location.search)) {
+    setTimeout(() => {
+      W.w = 1280; W.h = 720;
+      buildTrack(); resetRivals();
+      camZ = 0; playerX = 0; speed = 0; energy = 70; tuneLvl = 0;
+      lap = 1; lapStart = 0; raceTime = 0; totalDist = 0; prevSegIdx = 0;
+      state = 'race';
+      const DT = 1 / 60, SECS = 60;
+      let frames = 0, off = 0, maxX = 0;
+      for (let t = 0; t < SECS; t += DT) {
+        const bend = segAt(camZ).curve;
+        const want = Kit.clamp(bend * 0.24, -0.6, 0.6);
+        Kit.input.joy = { x: Kit.clamp((want - playerX) * 2.4, -1, 1), y: 0, active: true };
+        update(DT);
+        Kit.input.endFrame();
+        frames++;
+        maxX = Math.max(maxX, Math.abs(playerX));
+        if (Math.abs(playerX) > 1.02) off++;
+      }
+      Kit.input.joy = { x: 0, y: 0, active: false };
+      const v = {
+        simSeconds: SECS,
+        offTrackPct: +(100 * off / frames).toFixed(1),
+        maxX: +maxX.toFixed(2),
+        lapsDone: lap,
+        topKmh: Math.round(topSpeed / MAXS * 322)
+      };
+      window.__SELFTEST = v;
+      document.title = 'SELFTEST off=' + v.offTrackPct + '% maxX=' + v.maxX;
+    }, 60);
+  }
+
 })();

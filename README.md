@@ -50,6 +50,10 @@ How she works and how to swap in your own character: [docs/mascot-guide.md](docs
 - Fullscreen toggle, keyboard-playable menus, touch targets ≥ 44px
 - Every sound has a visual counterpart — the game is fully playable muted
 
+## Privacy
+
+No accounts, no cookies, no analytics, no tracking — nothing leaves your device. Progress and settings live in your browser's localStorage and can be wiped anytime from Settings. Full details: [SECURITY.md](SECURITY.md) and the deck-wide [privacy statement](https://github.com/siddhant-pardeshi/game-deck/blob/main/PRIVACY.md).
+
 ## Under the hood
 
 No engines, no frameworks, no downloaded assets. The track is a segment-projected pseudo-3D circuit rendered with Canvas2D paths every frame; the skyline, sun and cars are drawn geometry; the music and effects are synthesized live with WebAudio. The whole game is a few files of plain JavaScript.
